@@ -454,6 +454,16 @@ firewall_set(){
         else
             echo -e "[${yellow}Warning${plain}] firewalld looks like not running or not installed, please enable port ${shadowsocksport} manually if necessary."
         fi
+   elif centosversion 8; then
+        systemctl status firewalld > /dev/null 2>&1
+        if [ $? -eq 0 ]; then
+            default_zone=$(firewall-cmd --get-default-zone)
+            firewall-cmd --permanent --zone=${default_zone} --add-port=${shadowsocksport}/tcp
+            firewall-cmd --permanent --zone=${default_zone} --add-port=${shadowsocksport}/udp
+            firewall-cmd --reload
+        else
+            echo -e "[${yellow}Warning${plain}] firewalld looks like not running or not installed, please enable port ${shadowsocksport} manually if necessary."
+        fi
     fi
     echo -e "[${green}Info${plain}] firewall set completed..."
 }
